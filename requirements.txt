@@ -1,4 +1,6 @@
-selenium
 beautifulsoup4
 pandas
 opencsv
+openpyxl
+pytest-playwright
+pyarrow
