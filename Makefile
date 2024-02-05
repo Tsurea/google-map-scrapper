@@ -1,12 +1,17 @@
 NAME		= google-map-scrapper
 RUNNING		= running-google-map-scrapper
 
+# Directory
+OUTPUT		= ./output
+
+# Docker ID
 CONTAINER	= $(shell docker ps --quiet)
 IMAGE		= $(shell docker images --quiet)
 
 all:
+	@mkdir -p ${OUTPUT}
 	docker build -t ${NAME} .
-	docker run -it --rm --name ${RUNNING} ${NAME}
+	docker run -it -v ${OUTPUT}:/usr/bin/app/output --rm --name ${RUNNING} ${NAME}
 
 clean:
 ifneq ($(strip ${CONTAINER}),)

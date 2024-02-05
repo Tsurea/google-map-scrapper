@@ -9,4 +9,6 @@ RUN playwright install && playwright install-deps
 COPY run.py .
 COPY input.txt .
 
+RUN mkdir output
+
 CMD ["python",	"./run.py"]
