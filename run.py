@@ -11,11 +11,12 @@ class Business:
     address: str = None
     website: str = None
     phone_number: str = None
-    reviews_count: int = None
-    reviews_average: float = None
-    latitude: float = None
-    longitude: float = None
-
+    """
+    # not in right now
+    siren: str = None
+    email: str = None
+    linkedin: str = None
+    """
 
 @dataclass
 class BusinessList:
@@ -113,7 +114,6 @@ def main():
         page.wait_for_timeout(5000)
 
         page.get_by_role("button", name="Tout refuser").click()
-        #page.locator('//button[@id="W0wltc"]').click()
         
         for search_for_index, search_for in enumerate(search_list):
             print(f"-----\n{search_for_index} - {search_for}".strip())
@@ -179,7 +179,7 @@ def main():
                     listing.click()
                     page.wait_for_timeout(5000)
 
-                    name_xpath = '//div[contains(@class, "fontHeadlineSmall")]'
+                    name_xpath = 'h1'
                     address_xpath = '//button[@data-item-id="address"]//div[contains(@class, "fontBodyMedium")]'
                     website_xpath = '//a[@data-item-id="authority"]//div[contains(@class, "fontBodyMedium")]'
                     phone_number_xpath = '//button[contains(@data-item-id, "phone:tel:")]//div[contains(@class, "fontBodyMedium")]'
@@ -187,8 +187,8 @@ def main():
 
                     business = Business()
 
-                    if listing.locator(name_xpath).count() > 0:
-                        business.name = listing.locator(name_xpath).all()[0].inner_text()
+                    if page.locator(name_xpath).count() > 0:
+                        business.name = page.locator(name_xpath).all()[1].inner_text()
                     else:
                         business.name = ""
                     if page.locator(address_xpath).count() > 0:
@@ -203,27 +203,6 @@ def main():
                         business.phone_number = page.locator(phone_number_xpath).all()[0].inner_text()
                     else:
                         business.phone_number = ""
-                    if listing.locator(reviews_span_xpath).count() > 0:
-                        business.reviews_average = float(
-                            listing.locator(reviews_span_xpath).all()[0]
-                            .get_attribute("aria-label")
-                            .split()[0]
-                            .replace(",", ".")
-                            .strip()
-                        )
-                        business.reviews_count = int(
-                            listing.locator(reviews_span_xpath).all()[0]
-                            .get_attribute("aria-label")
-                            .split()[2]
-                            .replace(',','')
-                            .strip()
-                        )
-                    else:
-                        business.reviews_average = ""
-                        business.reviews_count = ""
-                    
-                    business.latitude, business.longitude = extract_coordinates_from_url(page.url)
-
                     business_list.business_list.append(business)
                 except Exception as e:
                     print(f'Error occured: {e}')
