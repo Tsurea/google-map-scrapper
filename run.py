@@ -57,13 +57,6 @@ class BusinessList:
             os.makedirs(self.save_at)
         self.dataframe().to_csv(f"output/{filename}.csv", index=False)
 
-def extract_coordinates_from_url(url: str) -> tuple[float,float]:
-    """helper function to extract coordinates from url"""
-    
-    coordinates = url.split('/@')[-1].split('/')[0]
-    # return latitude, longitude
-    return float(coordinates.split(',')[0]), float(coordinates.split(',')[1])
-
 def main():
     
     ########
@@ -117,6 +110,8 @@ def main():
         
         for search_for_index, search_for in enumerate(search_list):
             print(f"-----\n{search_for_index} - {search_for}".strip())
+
+            search_for = search_for.replace('\n', '')
 
             page.locator('//input[@id="searchboxinput"]').fill(search_for)
             page.wait_for_timeout(3000)
@@ -188,7 +183,7 @@ def main():
                     business = Business()
 
                     if page.locator(name_xpath).count() > 0:
-                        business.name = page.locator(name_xpath).all()[1].inner_text()
+                        business.name = page.locator(name_xpath).all()[0].inner_text()
                     else:
                         business.name = ""
                     if page.locator(address_xpath).count() > 0:
